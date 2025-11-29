@@ -1,0 +1,404 @@
+{
+  "configuration" : {
+    "scope" : "SoftwareSystem"
+  },
+  "description" : "An AI-powered system designed to scrape dynamic web content, extract structured data using an LLM, and display the results in a user interface.",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedAgent" : "structurizr-ui",
+  "lastModifiedDate" : "2025-11-29T21:27:14Z",
+  "model" : {
+    "people" : [ {
+      "description" : "The user who configures the scraper, initiates the job, and views the structured results.",
+      "id" : "1",
+      "name" : "Developer/Analyst",
+      "properties" : {
+        "structurizr.dsl.identifier" : "u"
+      },
+      "relationships" : [ {
+        "description" : "Configures job and views results via",
+        "destinationId" : "5",
+        "id" : "11",
+        "sourceId" : "1",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Configures job and views results via",
+        "destinationId" : "4",
+        "id" : "12",
+        "linkedRelationshipId" : "11",
+        "sourceId" : "1"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "description" : "Hosts the dynamic content (HTML/JS) to be scraped.",
+      "documentation" : { },
+      "id" : "2",
+      "name" : "Target Web Server",
+      "properties" : {
+        "structurizr.dsl.identifier" : "ws"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "The external LLM (e.g., OpenAI API) that converts raw HTML into structured JSON.",
+      "documentation" : { },
+      "id" : "3",
+      "name" : "LLM Service",
+      "properties" : {
+        "structurizr.dsl.identifier" : "llm"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "containers" : [ {
+        "description" : "Serves the user interface allowing configuration and display of structured results.",
+        "documentation" : { },
+        "id" : "5",
+        "name" : "Web Application",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.wa"
+        },
+        "relationships" : [ {
+          "description" : "Initiates scraping job via API call (Async)",
+          "destinationId" : "7",
+          "id" : "13",
+          "sourceId" : "5",
+          "tags" : "Relationship"
+        }, {
+          "description" : "Retrieves structured results for display (Read-Only)",
+          "destinationId" : "6",
+          "id" : "14",
+          "sourceId" : "5",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "React/Next.js"
+      }, {
+        "description" : "Database storing the final, clean, structured data.",
+        "documentation" : { },
+        "id" : "6",
+        "name" : "Structured Data Store",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.db"
+        },
+        "tags" : "Element,Container,Database",
+        "technology" : "PostgreSQL"
+      }, {
+        "components" : [ {
+          "description" : "Controls the headless browser (Playwright) to retrieve fully rendered HTML and screenshots.",
+          "documentation" : { },
+          "id" : "8",
+          "name" : "WebScraperAgent",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.api.scraper"
+          },
+          "relationships" : [ {
+            "description" : "Accesses dynamic web content from",
+            "destinationId" : "2",
+            "id" : "15",
+            "sourceId" : "8",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Passes raw HTML and screenshot to",
+            "destinationId" : "10",
+            "id" : "23",
+            "sourceId" : "8",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Python Class"
+        }, {
+          "description" : "The defined schema used to enforce the structure of the output JSON.",
+          "documentation" : { },
+          "id" : "9",
+          "name" : "Pydantic Data Models",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.api.models"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Python Pydantic Schemas"
+        }, {
+          "description" : "Manages communication with the external LLM for structured extraction.",
+          "documentation" : { },
+          "id" : "10",
+          "name" : "LLM Processor/Client",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.api.processor"
+          },
+          "relationships" : [ {
+            "description" : "Requests structured data from",
+            "destinationId" : "3",
+            "id" : "18",
+            "sourceId" : "10",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Writes final structured data to",
+            "destinationId" : "6",
+            "id" : "21",
+            "sourceId" : "10",
+            "tags" : "Relationship"
+          }, {
+            "description" : "References schema structure from",
+            "destinationId" : "9",
+            "id" : "24",
+            "sourceId" : "10",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Python Client"
+        } ],
+        "description" : "The backend service that runs the WebScraperAgent and LLM Client logic.",
+        "documentation" : { },
+        "id" : "7",
+        "name" : "Scraping & Processing API",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.api"
+        },
+        "relationships" : [ {
+          "description" : "Accesses dynamic web content from",
+          "destinationId" : "2",
+          "id" : "16",
+          "linkedRelationshipId" : "15",
+          "sourceId" : "7"
+        }, {
+          "description" : "Requests structured data from",
+          "destinationId" : "3",
+          "id" : "19",
+          "linkedRelationshipId" : "18",
+          "sourceId" : "7"
+        }, {
+          "description" : "Writes final structured data to",
+          "destinationId" : "6",
+          "id" : "22",
+          "linkedRelationshipId" : "21",
+          "sourceId" : "7"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Python/FastAPI"
+      } ],
+      "description" : "The core application that orchestrates the scraping, processing, storage, and presentation of the data.",
+      "documentation" : { },
+      "id" : "4",
+      "name" : "AI Scraper & Analyzer",
+      "properties" : {
+        "structurizr.dsl.identifier" : "ss"
+      },
+      "relationships" : [ {
+        "description" : "Accesses dynamic web content from",
+        "destinationId" : "2",
+        "id" : "17",
+        "linkedRelationshipId" : "15",
+        "sourceId" : "4"
+      }, {
+        "description" : "Requests structured data from",
+        "destinationId" : "3",
+        "id" : "20",
+        "linkedRelationshipId" : "18",
+        "sourceId" : "4"
+      } ],
+      "tags" : "Element,Software System,Internal"
+    } ]
+  },
+  "name" : "AI-Powered Web Scraping and Analysis System",
+  "properties" : {
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "0",
+    "structurizr.inspection.error" : "16",
+    "structurizr.inspection.warning" : "0",
+    "structurizr.dsl" : "d29ya3NwYWNlICJBSS1Qb3dlcmVkIFdlYiBTY3JhcGluZyBhbmQgQW5hbHlzaXMgU3lzdGVtIiAiQW4gQUktcG93ZXJlZCBzeXN0ZW0gZGVzaWduZWQgdG8gc2NyYXBlIGR5bmFtaWMgd2ViIGNvbnRlbnQsIGV4dHJhY3Qgc3RydWN0dXJlZCBkYXRhIHVzaW5nIGFuIExMTSwgYW5kIGRpc3BsYXkgdGhlIHJlc3VsdHMgaW4gYSB1c2VyIGludGVyZmFjZS4iIHsKCiAgICAhaWRlbnRpZmllcnMgaGllcmFyY2hpY2FsCgogICAgbW9kZWwgewogICAgICAgIC8vIC0tLSBQZW9wbGUgLS0tCiAgICAgICAgdSA9IHBlcnNvbiAiRGV2ZWxvcGVyL0FuYWx5c3QiICJUaGUgdXNlciB3aG8gY29uZmlndXJlcyB0aGUgc2NyYXBlciwgaW5pdGlhdGVzIHRoZSBqb2IsIGFuZCB2aWV3cyB0aGUgc3RydWN0dXJlZCByZXN1bHRzLiIKICAgICAgICAKICAgICAgICAvLyAtLS0gRXh0ZXJuYWwgU3lzdGVtcyAoQzEpIC0tLQogICAgICAgIHdzID0gc29mdHdhcmVTeXN0ZW0gIlRhcmdldCBXZWIgU2VydmVyIiAiSG9zdHMgdGhlIGR5bmFtaWMgY29udGVudCAoSFRNTC9KUykgdG8gYmUgc2NyYXBlZC4iIHsKICAgICAgICAgICAgdGFncyAiRXh0ZXJuYWwiCiAgICAgICAgfQogICAgICAgIGxsbSA9IHNvZnR3YXJlU3lzdGVtICJMTE0gU2VydmljZSIgIlRoZSBleHRlcm5hbCBMTE0gKGUuZy4sIE9wZW5BSSBBUEkpIHRoYXQgY29udmVydHMgcmF3IEhUTUwgaW50byBzdHJ1Y3R1cmVkIEpTT04uIiB7CiAgICAgICAgICAgIHRhZ3MgIkV4dGVybmFsIgogICAgICAgIH0KCiAgICAgICAgLy8gLS0tIE91ciBTb2Z0d2FyZSBTeXN0ZW0gKEMxIEJvdW5kYXJ5KSAtLS0KICAgICAgICBzcyA9IHNvZnR3YXJlU3lzdGVtICJBSSBTY3JhcGVyICYgQW5hbHl6ZXIiICJUaGUgY29yZSBhcHBsaWNhdGlvbiB0aGF0IG9yY2hlc3RyYXRlcyB0aGUgc2NyYXBpbmcsIHByb2Nlc3NpbmcsIHN0b3JhZ2UsIGFuZCBwcmVzZW50YXRpb24gb2YgdGhlIGRhdGEuIiB7CiAgICAgICAgICAgIHRhZ3MgIkludGVybmFsIgogICAgICAgICAgICAKICAgICAgICAgICAgLy8gLS0tIEMyIENvbnRhaW5lcnMgLS0tCiAgICAgICAgICAgIHdhID0gY29udGFpbmVyICJXZWIgQXBwbGljYXRpb24iICJTZXJ2ZXMgdGhlIHVzZXIgaW50ZXJmYWNlIGFsbG93aW5nIGNvbmZpZ3VyYXRpb24gYW5kIGRpc3BsYXkgb2Ygc3RydWN0dXJlZCByZXN1bHRzLiIgIlJlYWN0L05leHQuanMiCiAgICAgICAgICAgIGRiID0gY29udGFpbmVyICJTdHJ1Y3R1cmVkIERhdGEgU3RvcmUiICJEYXRhYmFzZSBzdG9yaW5nIHRoZSBmaW5hbCwgY2xlYW4sIHN0cnVjdHVyZWQgZGF0YS4iICJQb3N0Z3JlU1FMIiB7IAogICAgICAgICAgICAgICAgdGFncyAiRGF0YWJhc2UiIAogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICAvLyAtLS0gQzIgQ29udGFpbmVyOiBTY3JhcGluZyAmIFByb2Nlc3NpbmcgQVBJIC0tLQogICAgICAgICAgICBhcGkgPSBjb250YWluZXIgIlNjcmFwaW5nICYgUHJvY2Vzc2luZyBBUEkiICJUaGUgYmFja2VuZCBzZXJ2aWNlIHRoYXQgcnVucyB0aGUgV2ViU2NyYXBlckFnZW50IGFuZCBMTE0gQ2xpZW50IGxvZ2ljLiIgIlB5dGhvbi9GYXN0QVBJIiB7CiAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgIC8vIC0tLSBDMyBDb21wb25lbnRzIGluc2lkZSB0aGUgQVBJIC0tLQogICAgICAgICAgICAgICAgc2NyYXBlciA9IGNvbXBvbmVudCAiV2ViU2NyYXBlckFnZW50IiAiQ29udHJvbHMgdGhlIGhlYWRsZXNzIGJyb3dzZXIgKFBsYXl3cmlnaHQpIHRvIHJldHJpZXZlIGZ1bGx5IHJlbmRlcmVkIEhUTUwgYW5kIHNjcmVlbnNob3RzLiIgIlB5dGhvbiBDbGFzcyIKICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgbW9kZWxzID0gY29tcG9uZW50ICJQeWRhbnRpYyBEYXRhIE1vZGVscyIgIlRoZSBkZWZpbmVkIHNjaGVtYSB1c2VkIHRvIGVuZm9yY2UgdGhlIHN0cnVjdHVyZSBvZiB0aGUgb3V0cHV0IEpTT04uIiAiUHl0aG9uIFB5ZGFudGljIFNjaGVtYXMiCiAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgIHByb2Nlc3NvciA9IGNvbXBvbmVudCAiTExNIFByb2Nlc3Nvci9DbGllbnQiICJNYW5hZ2VzIGNvbW11bmljYXRpb24gd2l0aCB0aGUgZXh0ZXJuYWwgTExNIGZvciBzdHJ1Y3R1cmVkIGV4dHJhY3Rpb24uIiAiUHl0aG9uIENsaWVudCIKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgLy8gLS0tIEMxLCBDMiwgQzMgUmVsYXRpb25zaGlwcyAtLS0KICAgICAgICAKICAgICAgICAvLyBFeHRlcm5hbCBSZWxhdGlvbnNoaXBzIChDMS9DMiAtIFBlb3BsZSBhbmQgQzIgSW50ZXJuYWwgTGlua3MpCiAgICAgICAgdSAtPiBzcy53YSAiQ29uZmlndXJlcyBqb2IgYW5kIHZpZXdzIHJlc3VsdHMgdmlhIgoKICAgICAgICAvLyBJbnRlcm5hbCBSZWxhdGlvbnNoaXBzIChDMiAtIENvbnRhaW5lciB0byBDb250YWluZXIpCiAgICAgICAgc3Mud2EgLT4gc3MuYXBpICJJbml0aWF0ZXMgc2NyYXBpbmcgam9iIHZpYSBBUEkgY2FsbCAoQXN5bmMpIgogICAgICAgIHNzLndhIC0+IHNzLmRiICJSZXRyaWV2ZXMgc3RydWN0dXJlZCByZXN1bHRzIGZvciBkaXNwbGF5IChSZWFkLU9ubHkpIgogICAgICAgIAogICAgICAgIC8vIEMzIENvbXBvbmVudCBMaW5rczogRGVmaW5lcyBhbGwgZXh0ZXJuYWwgY29tbXVuaWNhdGlvbiBmb3IgdGhlIEFQSQogICAgICAgIHNzLmFwaS5zY3JhcGVyIC0+IHdzICJBY2Nlc3NlcyBkeW5hbWljIHdlYiBjb250ZW50IGZyb20iIAogICAgICAgIHNzLmFwaS5wcm9jZXNzb3IgLT4gbGxtICJSZXF1ZXN0cyBzdHJ1Y3R1cmVkIGRhdGEgZnJvbSIgCiAgICAgICAgCiAgICAgICAgLy8gQzMgSW50ZXJuYWwgRmxvdyAmIFN0b3JhZ2UKICAgICAgICBzcy5hcGkucHJvY2Vzc29yIC0+IHNzLmRiICJXcml0ZXMgZmluYWwgc3RydWN0dXJlZCBkYXRhIHRvIgogICAgICAgIHNzLmFwaS5zY3JhcGVyIC0+IHNzLmFwaS5wcm9jZXNzb3IgIlBhc3NlcyByYXcgSFRNTCBhbmQgc2NyZWVuc2hvdCB0byIKICAgICAgICBzcy5hcGkucHJvY2Vzc29yIC0+IHNzLmFwaS5tb2RlbHMgIlJlZmVyZW5jZXMgc2NoZW1hIHN0cnVjdHVyZSBmcm9tIgogICAgfQoKICAgIHZpZXdzIHsKICAgICAgICBzeXN0ZW1Db250ZXh0IHNzICJTeXN0ZW1Db250ZXh0IiB7IAogICAgICAgICAgICB0aXRsZSAiQzE6IFN5c3RlbSBDb250ZXh0IERpYWdyYW0gLSBBSSBTY3JhcGVyICYgQW5hbHl6ZXIiCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJTaG93cyB0aGUgY29yZSBzeXN0ZW0sIGl0cyB1c2VycywgYW5kIGV4dGVybmFsIGRlcGVuZGVuY2llcy4iCiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KCiAgICAgICAgY29udGFpbmVyIHNzICJDb250YWluZXJEaWFncmFtIiB7IAogICAgICAgICAgICB0aXRsZSAiQzI6IENvbnRhaW5lciBEaWFncmFtIC0gQUkgU2NyYXBlciAmIEFuYWx5emVyIgogICAgICAgICAgICBkZXNjcmlwdGlvbiAiU2hvd3MgdGhlIGhpZ2gtbGV2ZWwgY29kZSBjb250YWluZXJzIHdpdGhpbiB0aGUgQUkgU2NyYXBlciAmIEFuYWx5emVyIHN5c3RlbS4iCiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KICAgICAgICAKICAgICAgICBjb21wb25lbnQgc3MuYXBpICJBUElfQ29tcG9uZW50cyIgewogICAgICAgICAgICB0aXRsZSAiQzM6IENvbXBvbmVudCBEaWFncmFtIC0gU2NyYXBpbmcgJiBQcm9jZXNzaW5nIEFQSSIKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlNob3dzIHRoZSBpbnRlcm5hbCBjb21wb25lbnRzIG9mIHRoZSBBUEkgdGhhdCBleGVjdXRlIHRoZSBjb3JlIHNjcmFwaW5nIGFuZCBMTE0gcHJvY2Vzc2luZyB3b3JrZmxvdy4iCiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBpbmNsdWRlIHdzCiAgICAgICAgICAgIGluY2x1ZGUgbGxtIAogICAgICAgICAgICBpbmNsdWRlIHNzLmRiCiAgICAgICAgICAgIGV4Y2x1ZGUgc3Mud2EgCiAgICAgICAgfQoKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50ICJFbGVtZW50IiB7IAogICAgICAgICAgICAgICAgY29sb3IgIzU1YWE1NQogICAgICAgICAgICAgICAgc3Ryb2tlICM1NWFhNTUKICAgICAgICAgICAgICAgIHN0cm9rZVdpZHRoIDcKICAgICAgICAgICAgICAgIHNoYXBlIHJvdW5kZWRib3gKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJQZXJzb24iIHsgCiAgICAgICAgICAgICAgICBzaGFwZSBwZXJzb24KICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJFeHRlcm5hbCIgeyAKICAgICAgICAgICAgICAgIGNvbG9yICNjYzMzMzMKICAgICAgICAgICAgICAgIHN0cm9rZSAjY2MzMzMzCiAgICAgICAgICAgICAgICBvcGFjaXR5IDcwCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiSW50ZXJuYWwiIHsgCiAgICAgICAgICAgICAgICBjb2xvciAjMTE2OGJkCiAgICAgICAgICAgICAgICBzdHJva2UgIzExNjhiZAogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkRhdGFiYXNlIiB7IAogICAgICAgICAgICAgICAgc2hhcGUgY3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgICAgICByZWxhdGlvbnNoaXAgIlJlbGF0aW9uc2hpcCIgeyAKICAgICAgICAgICAgICAgIHRoaWNrbmVzcyA0CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CgogICAgY29uZmlndXJhdGlvbiB7CiAgICAgICAgc2NvcGUgc29mdHdhcmVzeXN0ZW0KICAgIH0KfQ=="
+  },
+  "views" : {
+    "componentViews" : [ {
+      "containerId" : "7",
+      "description" : "Shows the internal components of the API that execute the core scraping and LLM processing workflow.",
+      "dimensions" : {
+        "height" : 2291,
+        "width" : 2430
+      },
+      "elements" : [ {
+        "id" : "2",
+        "x" : 330,
+        "y" : 1685
+      }, {
+        "id" : "3",
+        "x" : 1405,
+        "y" : 1720
+      }, {
+        "id" : "6",
+        "x" : 1010,
+        "y" : 90
+      }, {
+        "id" : "8",
+        "x" : 160,
+        "y" : 515
+      }, {
+        "id" : "9",
+        "x" : 1735,
+        "y" : 485
+      }, {
+        "id" : "10",
+        "x" : 1005,
+        "y" : 1020
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "API_Components",
+      "name" : "Component View: AI Scraper & Analyzer - Scraping & Processing API",
+      "order" : 3,
+      "relationships" : [ {
+        "id" : "15"
+      }, {
+        "id" : "18"
+      }, {
+        "id" : "21"
+      }, {
+        "id" : "23"
+      }, {
+        "id" : "24"
+      } ],
+      "title" : "C3: Component Diagram - Scraping & Processing API"
+    } ],
+    "configuration" : {
+      "branding" : { },
+      "lastSavedView" : "SystemContext",
+      "metadataSymbols" : "SquareBrackets",
+      "styles" : {
+        "elements" : [ {
+          "shape" : "Cylinder",
+          "tag" : "Database"
+        }, {
+          "color" : "#55aa55",
+          "shape" : "RoundedBox",
+          "stroke" : "#55aa55",
+          "strokeWidth" : 7,
+          "tag" : "Element"
+        }, {
+          "color" : "#cc3333",
+          "opacity" : 70,
+          "stroke" : "#cc3333",
+          "tag" : "External"
+        }, {
+          "color" : "#1168bd",
+          "stroke" : "#1168bd",
+          "tag" : "Internal"
+        }, {
+          "shape" : "Person",
+          "tag" : "Person"
+        } ],
+        "relationships" : [ {
+          "tag" : "Relationship",
+          "thickness" : 4
+        } ]
+      },
+      "terminology" : { }
+    },
+    "containerViews" : [ {
+      "description" : "Shows the high-level code containers within the AI Scraper & Analyzer system.",
+      "dimensions" : {
+        "height" : 2620,
+        "width" : 2282
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 245,
+        "y" : 1990
+      }, {
+        "id" : "2",
+        "x" : 1430,
+        "y" : 105
+      }, {
+        "id" : "3",
+        "x" : 1480,
+        "y" : 2170
+      }, {
+        "id" : "5",
+        "x" : 240,
+        "y" : 1360
+      }, {
+        "id" : "6",
+        "x" : 260,
+        "y" : 525
+      }, {
+        "id" : "7",
+        "x" : 1445,
+        "y" : 1000
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "ContainerDiagram",
+      "name" : "Container View: AI Scraper & Analyzer",
+      "order" : 2,
+      "relationships" : [ {
+        "id" : "11"
+      }, {
+        "id" : "13",
+        "vertices" : [ {
+          "x" : 1500,
+          "y" : 1525
+        }, {
+          "x" : 1500,
+          "y" : 1320
+        } ]
+      }, {
+        "id" : "14"
+      }, {
+        "id" : "16"
+      }, {
+        "id" : "19"
+      }, {
+        "id" : "22",
+        "vertices" : [ {
+          "x" : 1515,
+          "y" : 995
+        }, {
+          "x" : 1515,
+          "y" : 680
+        } ]
+      } ],
+      "softwareSystemId" : "4",
+      "title" : "C2: Container Diagram - AI Scraper & Analyzer"
+    } ],
+    "systemContextViews" : [ {
+      "description" : "Shows the core system, its users, and external dependencies.",
+      "dimensions" : {
+        "height" : 1650,
+        "width" : 2800
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 340,
+        "y" : 485
+      }, {
+        "id" : "2",
+        "x" : 2000,
+        "y" : 110
+      }, {
+        "id" : "3",
+        "x" : 2020,
+        "y" : 1055
+      }, {
+        "id" : "4",
+        "x" : 1040,
+        "y" : 585
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "SystemContext",
+      "name" : "System Context View: AI Scraper & Analyzer",
+      "order" : 1,
+      "relationships" : [ {
+        "id" : "12"
+      }, {
+        "id" : "17",
+        "vertices" : [ {
+          "x" : 1290,
+          "y" : 255
+        } ]
+      }, {
+        "id" : "20",
+        "vertices" : [ {
+          "x" : 1265,
+          "y" : 1220
+        } ]
+      } ],
+      "softwareSystemId" : "4",
+      "title" : "C1: System Context Diagram - AI Scraper & Analyzer"
+    } ]
+  }
+}
