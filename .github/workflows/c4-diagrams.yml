@@ -1,0 +1,59 @@
+name: Generate C4 Diagrams
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'architecture/**'
+      - '.github/workflows/c4-diagrams.yml'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'architecture/**'
+      - '.github/workflows/c4-diagrams.yml'
+  workflow_dispatch:
+
+jobs:
+  generate-diagrams:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install Structurizr CLI
+      run: |
+        mkdir -p $HOME/.local/bin
+        curl -L https://github.com/structurizr/cli/releases/latest/download/structurizr-cli-linux-x64.tar.gz -o structurizr-cli.tar.gz
+        tar -xzf structurizr-cli.tar.gz -C $HOME/.local/bin
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        
+    - name: Generate diagrams
+      run: |
+        # Create output directory
+        mkdir -p architecture/diagrams
+        
+        # Generate diagrams from DSL
+        structurizr-cli export -workspace architecture/workspace.dsl -format mermaid -output architecture/diagrams/
+        structurizr-cli export -workspace architecture/workspace.dsl -format plantuml -output architecture/diagrams/
+        structurizr-cli export -workspace architecture/workspace.dsl -format png -output architecture/diagrams/
+    
+    - name: Commit and push changes
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'actions@github.com'
+        
+        # Check if there are changes to commit
+        git add architecture/diagrams/
+        git diff --quiet && git diff --staged --quiet || (
+          git commit -m "chore: auto-update C4 diagrams [skip ci]"
+          git push
+        )
