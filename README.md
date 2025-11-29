@@ -1,4 +1,4 @@
-# Simple Web Agent
+# Simple Web Agent (SWA)
 
 A web application that allows users to search and explore DeepLearning.AI courses using AI-powered web scraping.
 
@@ -30,7 +30,7 @@ A web application that allows users to search and explore DeepLearning.AI course
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Holious-tech/SWA-APP.git
    cd SWA-APP
    ```
 
@@ -38,7 +38,7 @@ A web application that allows users to search and explore DeepLearning.AI course
    ```bash
    # Create and activate a virtual environment
    python -m venv venv
-   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+   .\venv\Scripts\activate
    
    # Install dependencies
    pip install -r requirements.txt
@@ -69,21 +69,6 @@ A web application that allows users to search and explore DeepLearning.AI course
    ```
 
 3. Open your browser and navigate to `http://localhost:3000`
-
-## Project Structure
-
-```
-SWA-APP/
-├── backend/               # Backend source code
-│   ├── app/              # Main application package
-│   ├── tests/            # Test files
-│   └── requirements.txt  # Python dependencies
-├── frontend/             # Frontend source code
-│   ├── public/           # Static files
-│   └── src/              # React source code
-├── .gitignore           # Git ignore file
-└── README.md            # Project documentation
-```
 
 ## License
 

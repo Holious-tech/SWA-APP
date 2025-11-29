@@ -20,6 +20,9 @@ wheels/
 .installed.cfg
 *.egg
 
+# Project specific
+project.txt
+
 # Virtual Environment
 venv/
 env/
@@ -47,10 +50,6 @@ yarn-error.log*
 
 # Local development
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 # Build files
 /build
@@ -68,21 +67,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Local development
-.DS_Store
-
 # Testing
 /coverage
 
 # Production
 /build
-
-# Misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 # Screenshots
 *.png
