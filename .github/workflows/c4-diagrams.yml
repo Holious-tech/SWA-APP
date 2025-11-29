@@ -10,7 +10,6 @@ on:
     branches: [ main, master ]
     paths:
       - 'architecture/**'
-      - '.github/workflows/c4-diagrams.yml'
   workflow_dispatch:
 
 jobs:
@@ -23,37 +22,55 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - name: Set up Java (required for Structurizr CLI)
+      uses: actions/setup-java@v3
       with:
-        python-version: '3.10'
+        java-version: '11'
+        distribution: 'adopt'
     
-    - name: Install Structurizr CLI
+    - name: Install Graphviz (required for PNG export)
       run: |
-        mkdir -p $HOME/.local/bin
-        curl -L https://github.com/structurizr/cli/releases/latest/download/structurizr-cli-linux-x64.tar.gz -o structurizr-cli.tar.gz
-        tar -xzf structurizr-cli.tar.gz -C $HOME/.local/bin
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
-        
+        sudo apt-get update
+        sudo apt-get install -y graphviz
+    
+    - name: Download and extract Structurizr CLI
+      run: |
+        mkdir -p structurizr
+        curl -L https://github.com/structurizr/cli/releases/latest/download/structurizr-cli-linux-amd64.tgz -o structurizr-cli.tgz
+        tar -xzf structurizr-cli.tgz -C structurizr
+        echo "$(pwd)/structurizr" >> $GITHUB_PATH
+    
+    - name: Verify installation
+      run: structurizr-cli --version
+    
+    - name: Create diagrams directory
+      run: mkdir -p architecture/diagrams
+    
+    - name: List files (for debugging)
+      run: ls -la architecture/
+    
     - name: Generate diagrams
+      working-directory: ./architecture
       run: |
-        # Create output directory
-        mkdir -p architecture/diagrams
-        
         # Generate diagrams from DSL
-        structurizr-cli export -workspace architecture/workspace.dsl -format mermaid -output architecture/diagrams/
-        structurizr-cli export -workspace architecture/workspace.dsl -format plantuml -output architecture/diagrams/
-        structurizr-cli export -workspace architecture/workspace.dsl -format png -output architecture/diagrams/
+        structurizr-cli export -workspace workspace.dsl -format mermaid -output ./diagrams/
+        structurizr-cli export -workspace workspace.dsl -format plantuml -output ./diagrams/
+        structurizr-cli export -workspace workspace.dsl -format png -output ./diagrams/
+        
+        # List generated files (for debugging)
+        ls -la ./diagrams/
     
     - name: Commit and push changes
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       run: |
         git config --global user.name 'GitHub Actions'
         git config --global user.email 'actions@github.com'
         
         # Check if there are changes to commit
-        git add architecture/diagrams/
-        git diff --quiet && git diff --staged --quiet || (
+        git add diagrams/
+        if ! git diff --quiet && ! git diff --staged --quiet; then
           git commit -m "chore: auto-update C4 diagrams [skip ci]"
           git push
-        )
+        else
+          echo "No changes to commit"
+        fi
