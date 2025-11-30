@@ -5,7 +5,7 @@
   "description" : "An AI-powered system designed to scrape dynamic web content, extract structured data using an LLM, and display the results in a user interface.",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedDate" : "2025-11-29T21:51:53Z",
+  "lastModifiedDate" : "2025-11-30T06:12:11Z",
   "model" : {
     "people" : [ {
       "description" : "The user who configures the scraper, initiates the job, and views the structured results.",
@@ -373,7 +373,7 @@
         "y" : 1055
       }, {
         "id" : "4",
-        "x" : 1040,
+        "x" : 995,
         "y" : 585
       } ],
       "enterpriseBoundaryVisible" : true,
@@ -385,8 +385,8 @@
       }, {
         "id" : "17",
         "vertices" : [ {
-          "x" : 1290,
-          "y" : 255
+          "x" : 1255,
+          "y" : 250
         } ]
       }, {
         "id" : "20",
